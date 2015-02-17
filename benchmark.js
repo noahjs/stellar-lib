@@ -1,7 +1,7 @@
 
-var Stellar = require('stellar-lib');
-var Seed    = Stellar.Seed;
-var crypto  = require('crypto');
+var Seed         = require('./src/js/ripple/seed').Seed;
+var Transaction  = require('./src/js/ripple/transaction').Transaction;
+var crypto       = require('crypto');
 
 /** Sync */
 function randomString(length, chars) {
@@ -49,7 +49,7 @@ var sign_tx = function(){
         "Sequence": 1,
         "Fee": 5000000,
     };
-    var tx = new Stellar.Transaction();
+    var tx = new Transaction();
     tx.tx_json = tx_JSON;
     tx._secret = 'sfo83sggRc97oQR42bwdWVq6sgbmjJxwu3aBP4bJhx8qvKen6p9';
     tx.remote = false; // Dont use StellarD
