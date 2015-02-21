@@ -122,19 +122,29 @@ KeyPair.sign_NACL = function(hash, secret) {
 }
 
 KeyPair.sign_SODIUM = function(hash, secret) {
-  var hash_hex = UInt256.from_json(hash).to_hex();
-
-  // Secret
-  var sec_hex   = Uint8Array_to_hex( secret ).slice(0, 64)
-
-  var key = new sodium.Key.Sign.fromSeed(sec_hex, 'hex');
-  var signer = new sodium.Sign(key);
-  var sig = signer.sign(hash_hex, 'hex');
-  var sig_hex = sig.sign.slice(0, 64).toString('hex');
-
+  var _seed     = new Buffer(secret.slice(0, 32)).toString('base64');
+  var key       = new sodium.Key.Sign.fromSeed( _seed, 'base64');
+  var signer    = new sodium.Sign(key);
+  var sig       = signer.sign( hash, 'hex');
+  var sig_hex   = sig.sign.slice(0, 64).toString('hex');
   var signed_bits = sjcl.codec.hex.toBits(sig_hex);
   return signed_bits;
 }
+
+// KeyPair.sign_SODIUM = function(hash, secret) {
+//   var hash_hex = UInt256.from_json(hash).to_hex();
+
+//   // Secret
+//   var sec_hex   = Uint8Array_to_hex( secret ).slice(0, 64)
+
+//   var key = new sodium.Key.Sign.fromSeed(sec_hex, 'hex');
+//   var signer = new sodium.Sign(key);
+//   var sig = signer.sign(hash_hex, 'hex');
+//   var sig_hex = sig.sign.slice(0, 64).toString('hex');
+
+//   var signed_bits = sjcl.codec.hex.toBits(sig_hex);
+//   return signed_bits;
+// }
 
 KeyPair.prototype.sign = function(hash) {
   if( USE_SODIUM ){
